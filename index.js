@@ -67,14 +67,31 @@ let pearsPerSecond = 0;
 
 // Update Handlers
 
+function UpdateUpgradeHighlights() {
+    upgrades.forEach(upgrade => upgrade.updateHighlight(pears));
+}
+
 function UpdatePearCount(value) {
     pears += value || 0;
     document.getElementById('pears').innerHTML = pears;
     UpdateUpgradeHighlights();
 }
 
-function UpdateUpgradeHighlights() {
-    upgrades.forEach(upgrade => upgrade.updateHighlight(pears));
+function CreateParticle(value, x, y) {
+    const particle = document.createElement('div');
+    particle.className = 'click-particle';
+    particle.style.position = 'absolute';
+    particle.style.left = x + 'px';
+    particle.style.top = y + 'px';
+    particle.innerHTML = `+${value}`;
+    return particle;
+}
+
+function EmitClickParticle(value, e) {
+    console.log(e)
+    const particle = CreateParticle(value, e.clientX, e.clientY);
+    document.body.appendChild(particle);
+    setTimeout(() => particle.remove(), 500);
 }
 
 // Per Second Handler
@@ -82,9 +99,9 @@ setInterval(() => {
     UpdatePearCount(pearsPerSecond);
 }, 1000);
 
-function PearClickHandler() {
+function PearClickHandler(e) {
     UpdatePearCount(pearsPerClick);
-
+    EmitClickParticle(pearsPerClick, e);
 }
 
 const effectTypes = {
